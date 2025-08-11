@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Шаблоны МЭС</title>
+
+    <link rel="icon" href="https://www.mosenergosbyt.ru/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+      .btn-link {
+        width: 100%;
+        text-align: left;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #2c3e50 !important;
+        text-decoration: none !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        border-left: 4px solid transparent;
+      }
+      .btn-link:hover { background-color: #e9ecef; border-left: 4px solid #3498db; }
+      #paymentDateGroup { display: none; }
+      .email-templates-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+      .template-header { display: flex; align-items: center; margin-bottom: 15px; font-size: 15px; color: #495057; }
+      .template-option { padding: 6px 12px; margin: 0 5px; border-radius: 16px; background: #f8f9fa; color: #212529; cursor: pointer; transition: all 0.2s; border: 1px solid #dee2e6; font-size: 14px; }
+      .template-option:hover { background: #e9ecef; border-color: #adb5bd; }
+      .template-option.active { background: #007bff; color: white; border-color: #007bff; }
+      .template-divider { color: #adb5bd; margin: 0 5px; }
+      .action-btn { padding: 8px 16px; margin: 5px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; transition: all 0.2s; min-width: 120px; }
+      .action-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+      .btn-mkd { background: #6c757d; color: white; }
+      .btn-igd-asumb { background: #28a745; color: white; }
+      .btn-igd { background: #fd7e14; color: white; }
+      .btn-pd { background: #007bff; color: white; }
+      .btn-akt { background: #17a2b8; color: white; }
+      .actions-container { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+
+      .action-btn {
+        position: relative;
+        padding: 15px 20px 15px 60px;
+        margin: 0 10px 15px 0;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: left;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+      }
+      .action-btn::before {
+        content: '';
+        position: absolute; left: 0; top: 0; width: 40px; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+      }
+      .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+      .btn-mkd { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
+      .btn-mkd::before { content: '\f1ad'; background: rgba(0,0,0,0.1); }
+      .btn-igd-asumb { background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); }
+      .btn-igd-asumb::before { content: '\f015'; background: rgba(0,0,0,0.1); }
+      .btn-igd { background: linear-gradient(135deg, #fd7e14 0%, #e36209 100%); }
+      .btn-igd::before { content: '\f7b2'; background: rgba(0,0,0,0.1); }
+      .btn-pd { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); }
+      .btn-pd::before { content: '\f571'; background: rgba(0,0,0,0.1); }
+      .btn-akt { background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%); }
+      .btn-akt::before { content: '\f46c'; background: rgba(0,0,0,0.1); }
+      .btn-badge { display: block; font-size: 12px; opacity: 0.8; margin-top: 3px; }
+
+      #bloknot { width: 150px; position: fixed; z-index: 999; right: 0; transition: cubic-bezier(.61,1.95,.26,.95) .5s; }
+      .text-template { cursor: pointer; color: #007bff; text-decoration: underline; }
+      .text-template:hover { color: #0056b3; text-decoration: none; }
+
+      /* Новый блок — расчет льготы */
+      .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+      .calc-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; }
+      .muted { color: #6c757d; font-size: 12px; }
+      .inline { display: inline-block; margin-right: 10px; }
+      .result-box { background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      .segmented { display: inline-flex; border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden; }
+      .segmented button { border: none; padding: 6px 10px; background: #f8f9fa; cursor: pointer; }
+      .segmented button.active { background: #007bff; color: #fff; }
+      .small-note { font-size: 12px; color: #6c757d; }
+      .form-label-bold { font-weight: 600; }
+      .hidden { display: none !important; }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .w-100 { width: 100%; }
+      input[type="number"].meter {
+        -moz-appearance: textfield;
+      }
+      input[type="number"].meter::-webkit-outer-spin-button,
+      input[type="number"].meter::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
+
+    <!-- bootstrap4 -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+  </head>
+  <body>
+
+    <textarea class="form-control" rows="3" id="bloknot"></textarea>
+
+    <div id="accordion">
+      <!-- Корректировки -->
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Корректировки</button>
+          </h5>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="container mt-3">
+            <div class="alert alert-primary center" role="alert">
+              <div class="input-group">
+                <span class="input-group-text">Не согласен с показаниями "Сети", Сетевой участок Россети МР; Дата сети
+                  <input oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="sDate">; То
+                  <input type="text" style="width: 60px" maxlength="6" id="sT0"> ; Т1
+                  <input type="text" style="width: 60px" maxlength="6" id="sT1"> ; Т2
+                  <input type="text" style="width: 60px" maxlength="6" id="sT2"> ; Т3
+                  <input type="text" style="width: 60px" maxlength="6" id="sT3"> ;
+                </span><span class="input-group-text">Дата кл
+                  <input class="thisDate" oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="cDate">; То
+                  <input type="text" style="width: 60px" maxlength="6" id="cT0"> ; Т1
+                  <input type="text" style="width: 60px" maxlength="6" id="cT1"> ; Т2
+                  <input type="text" style="width: 60px" maxlength="6" id="cT2"> ; Т3
+                  <input type="text" style="width: 60px" maxlength="6" id="cT3"> ;
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="fnCopy1()">Скопировать</button>
+            </div>
+
+            <div class="alert alert-primary center" role="alert">
+              <div class="input-group">
+                <span class="input-group-text">Клиент ошибочно передал показания
+                  <input oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="fDate">; То
+                  <input type="text" style="width: 60px" maxlength="6" id="fT0"> ; Т1
+                  <input type="text" style="width: 60px" maxlength="6" id="fT1"> ; Т2
+                  <input type="text" style="width: 60px" maxlength="6" id="fT2"> ; Т3
+                  <input type="text" style="width: 60px" maxlength="6" id="fT3"> ;
+                </span><span class="input-group-text">Корректировочные показания на
+                  <input oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="tDate">; То
+                  <input type="text" style="width: 60px" maxlength="6" id="tT0"> ; Т1
+                  <input type="text" style="width: 60px" maxlength="6" id="tT1"> ; Т2
+                  <input type="text" style="width: 60px" maxlength="6" id="tT2"> ; Т3
+                  <input type="text" style="width: 60px" maxlength="6" id="tT3"> ;
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="fnCopy2()">Скопировать</button>
+            </div>
+
+            <div class="alert alert-primary center" role="alert">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <input oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="f1Date"> клиент ошибочно передал показания То-
+                  <input type="text" style="width: 60px" maxlength="6" id="f1T0">, Т1-
+                  <input type="text" style="width: 60px" maxlength="6" id="f1T1">, Т2-
+                  <input type="text" style="width: 60px" maxlength="6" id="f1T2">, Т3-
+                  <input type="text" style="width: 60px" maxlength="6" id="f1T3">, данные показания необходимо удалить.
+                </span><span class="input-group-text">Корректные показания на
+                  <input class="thisDate" oninput="formatDate(this)" type="text" maxlength="10" placeholder="ХХ.ХХ.ХХХХ" style="width: 90px" id="t1Date"> То-
+                  <input type="text" style="width: 60px" maxlength="6" id="t1T0">, Т1-
+                  <input type="text" style="width: 60px" maxlength="6" id="t1T1">, Т2-
+                  <input type="text" style="width: 60px" maxlength="6" id="t1T2">, Т3-
+                  <input type="text" style="width: 60px" maxlength="6" id="t1T3">
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="fnCopy3()">Скопировать</button>
+            </div>
+
+            <div class="alert alert-primary center" role="alert">
+              <h5>Расчет new</h5>
+              <div class="input-group">
+                <span class="input-group-text">
+                  Показания на начало периода &nbsp;
+                  <input type="text" style="width: 90px" id="nrDate1" placeholder="Дата">, Т1-
+                  <input type="text" style="width: 60px" id="nrT1">, Т2-
+                  <input type="text" style="width: 60px" id="nrT2">, Т3-
+                  <input type="text" style="width: 60px" id="nrT3">
+                </span><span class="input-group-text">Текущие показания &nbsp;
+                  <input type="text" style="width: 90px" id="nrDate2" placeholder="Дата">, Т1-
+                  <input type="text" style="width: 60px" id="nr1T1">, Т2-
+                  <input type="text" style="width: 60px" id="nr1T2">, Т3-
+                  <input type="text" style="width: 60px" id="nr1T3">
+                </span><span class="input-group-text">Дата показаний, которые нужно корректировать &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                  <input type="text" style="width: 90px" class="nrItog" placeholder="Дата"> &nbsp;
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="nr()">Рассчитать</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Жалоба на сроки доставки ПД -->
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Жалоба на сроки доставки ПД</button>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+          <div class="card-body">
+            <div class="container-fluid">
+              <table class="table table-striped">
+                <tbody>
+                  <script type="text/javascript">
+                    const month_1 = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+                    const d = new Date();
+                    if (d.getMonth() == 0) {var name = month_1[d.getMonth()+11]} else {var name = month_1[d.getMonth()-1]}
+                    document.write(`
+                      <tr><td scope="row">Клиент не получил квитанцию за ${name} (месяц). В ЛС адрес клиента указан верно (сотрудник должен сверить адрес доставки ПД);</td></tr>
+                      <tr><td scope="row">Клиент не получил квитанцию за ${name} (месяц). В ЛС адрес клиента указан верно. Со слов клиента квитанции за ${name} (месяц) не получил весь дом.</td></tr>
+                      <tr><td scope="row">Клиент не получил квитанцию за ${name} (месяц). Альтернативный адрес сверен.</td></tr>
+                      <tr><td scope="row">Клиент не получил квитанцию за ${name} (месяц). В ЛС адрес клиента указан верно. Квитанции разбросаны по всей улице (дому).</td></tr>
+                    `)
+                  </script>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Заявка на изменение реквизитов -->
+      <div class="card">
+        <div class="card-header" id="headingThree">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Заявка на изменение реквизитов</button>
+          </h5>
+        </div>
+        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordion">
+          <div class="card-body">
+            <div class="alert alert-primary center" role="alert">
+              <div class="input-group">
+                <span class="input-group-text">Клиенту поступают звонки/смс/ E-mail на телефон
+                  <input type="text" style="width: 90px" id="phone_1"> /на E-mail
+                  <input type="text" style="width: 140px" id="mail_1">  о задолженности по ЛС
+                  <input type="text" style="width: 120px" id="ls_1" onchange="ls_11.value = this.value"> . Клиент не имеет отношение к ЛС
+                  <input type="text" style="width: 120px" id="ls_11" disabled> .
+                </span><span class="input-group-text">Дата информирования
+                  <input type="date" id="date_1"/>. Автообзвон/ E-mail информирование/Росдолг, ручной обзвон/смс-оповещение.
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="rekviz1()">Скопировать</button>
+            </div>
+
+            <div class="alert alert-primary center" role="alert">
+              <div class="input-group">
+                <span class="input-group-text">Клиенту на E-mail
+                  <input type="text" style="width: 180px" id="mail_2" onchange="mail_22.value = this.value"> поступила электронная квитанция по ЛС
+                  <input type="text" style="width: 120px" id="ls_2"> . Клиент отказывается от получения эл. счетов. Адрес электронной почты
+                  <input type="text" style="width: 180px" id="mail_22" disabled> необходимо удалить из биллинга
+                </span>
+              </div>
+              <button type="button" class="btn btn-primary mt-2" onclick="rekviz2()">Скопировать</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Жалоба на отключение ЭЭ -->
+      <div class="card">
+        <div class="card-header" id="headingFour">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Жалоба на отключение ЭЭ</button>
+          </h5>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+          <div class="card-body">
+            <div class="container mt-3">
+              <div class="alert alert-primary center" role="alert">
+                <div class="form-group">
+                  <label>Тип жалобы:</label>
+                  <div class="btn-group w-100" id="complaintTypeGroup">
+                    <button type="button" class="btn btn-outline-primary" onclick="selectComplaintType('Ошибочное отключение')">Ошибочное отключение</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="selectComplaintType('Нарушен срок возобновления')">Нарушен срок возобновления</button>
+                  </div>
+                </div>
+
+                <div class="form-group mt-3" id="selectedTheme" style="display: none;">
+                  <label>Тема письма:</label>
+                  <span id="themeText" class="text-template" onclick="copyThemeText()"></span>
+                </div>
+
+                <div class="form-group mt-3" id="confirmationTypeGroup" style="display: none;">
+                  <label>Подтверждение:</label>
+                  <div class="btn-group w-100">
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectConfirmationType(event,'Подтвердил через почту')">Подтвердил через почту</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="selectConfirmationType(event,'Подтверждено в КО')">Подтверждено в КО</button>
+                  </div>
+                </div>
+
+                <div class="form-group mt-3" id="complaintDateGroup" style="display: none;">
+                  <label for="complaintDate">Дата оплаты:</label>
+                  <input type="date" class="form-control" id="complaintDate" onchange="syncPaymentDate(this.value)">
+                </div>
+
+                <div class="form-group">
+                  <label for="complaintPhone">Телефон для связи:</label>
+                  <input type="text" class="form-control" id="complaintPhone" placeholder="Номер телефона">
+                </div>
+
+                <div class="form-group" id="emailGroup" style="display: none;">
+                  <label for="complaintEmail">Электронная почта:</label>
+                  <input type="email" class="form-control" id="complaintEmail" placeholder="Email">
+                </div>
+                <div class="form-group" id="paymentDateGroup" style="display: none;">
+                  <label for="paymentDate">Дата отправки чека:</label>
+                  <input type="date" class="form-control" id="paymentDate">
+                </div>
+
+                <button type="button" class="btn btn-primary mt-2" onclick="copyComplaint()">Скопировать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Жалоба на сроки заключения договора -->
+      <div class="card">
+        <div class="card-header" id="headingFive">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">Жалоба на сроки заключения договора</button>
+          </h5>
+        </div>
+        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+          <div class="card-body">
+            <div class="container mt-3">
+              <div class="alert alert-primary center" role="alert">
+                <div class="form-group">
+                  <label>Тип подачи:</label>
+                  <div class="btn-group w-100">
+                    <button type="button" class="btn btn-outline-primary" onclick="selectContractType('Подача в ЛКК')">Подача в ЛКК</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="selectContractType('Подача в КО')">Подача в КО</button>
+                  </div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="contractDate">Дата обращения:</label>
+                  <input type="date" class="form-control" id="contractDate">
+                </div>
+
+                <div class="form-group" id="requestNumberGroup" style="display: none;">
+                  <label for="requestNumber">Номер заявки:</label>
+                  <input type="text" class="form-control" id="requestNumber" placeholder="Номер заявки" maxlength="20">
+                </div>
+
+                <div class="form-group">
+                  <label for="clientNumber">Номер клиента:</label>
+                  <input type="text" class="form-control" id="clientNumber" placeholder="Номер клиента" maxlength="15">
+                </div>
+
+                <div class="form-group" id="officeAddressGroup" style="display: none;">
+                  <label for="officeAddress">Адрес/название КО:</label>
+                  <input type="text" class="form-control" id="officeAddress" placeholder="Адрес или название КО">
+                </div>
+
+                <button type="button" class="btn btn-primary mt-2" onclick="copyContractComplaint()">Скопировать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- НОВЫЙ БЛОК: Расчет льготы -->
+      <div class="card">
+        <div class="card-header" id="headingBenefit">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseBenefit" aria-expanded="false" aria-controls="collapseBenefit">Расчет льготы</button>
+          </h5>
+        </div>
+        <div id="collapseBenefit" class="collapse" aria-labelledby="headingBenefit" data-parent="#accordion">
+          <div class="card-body">
+            <div class="container mt-2">
+              <div class="calc-grid">
+                <div class="calc-card">
+                  <label class="form-label-bold">Кол-во льготников</label>
+                  <select id="lgPersons" class="form-control">
+                    <option value="1">1 чел</option>
+                    <option value="2">2 чел</option>
+                    <option value="3">3 чел</option>
+                  </select>
+                </div>
+
+                <div class="calc-card">
+                  <label class="form-label-bold">Норматив (кВт⋅ч на 1 чел)</label>
+                  <select id="lgNorm" class="form-control">
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                    <option value="70">70</option>
+                    <option value="80">80</option>
+                  </select>
+                  <div class="small-note mt-1">Итоговая квота = норматив × кол-во льготников</div>
+                </div>
+
+                <div class="calc-card">
+                  <label class="form-label-bold">Дата начала периода (прошлые показания)</label>
+                  <input type="date" id="benDateFrom" class="form-control">
+                  <label class="form-label-bold mt-2">Дата последних показаний (текущие)</label>
+                  <input type="date" id="benDateTo" class="form-control" oninput="updateReadingLabels()">
+                  <div class="small-note mt-1">Расход текущего месяца считается с 1-го числа до дня, предшествующего дате текущих показаний</div>
+                </div>
+
+                <div class="calc-card">
+                  <label class="form-label-bold">Тип расчета</label>
+                  <select id="calcType" class="form-control" onchange="renderReadingInputs()">
+                    <option value="single">Однотарифный</option>
+                    <option value="dual">Двухтарифный</option>
+                    <option value="triple">Трехтарифный</option>
+                  </select>
+
+                  <div class="mt-2">
+                    <label class="form-label-bold">Год тарифа</label>
+                    <div class="segmented" id="tariffYearSeg">
+                      <button type="button" class="active" onclick="setTariffYear(this,'2024')">Старый (2024)</button>
+                      <button type="button" onclick="setTariffYear(this,'2025')">Новый (2025)</button>
+                    </div>
+                  </div>
+
+                  <div class="mt-2">
+                    <label class="form-label-bold">Категория тарифа</label>
+                    <select id="tariffCategory" class="form-control">
+                      <option value="Городское население">Стандартный тариф (Городское население)</option>
+                      <option value="Городское население с электроплитой">Городской пониженный (электроплита)</option>
+                      <option value="Сельское население">Сельский</option>
+                    </select>
+                  </div>
+
+                  <div class="small-note mt-2">Тарифы подставятся автоматически по типу расчета</div>
+                </div>
+              </div>
+
+              <!-- Динамические поля показаний -->
+              <div id="readingInputs" class="mt-3"></div>
+
+              <div class="mt-3">
+                <button class="btn btn-primary" onclick="calcBenefit()">Рассчитать</button>
+                <button class="btn btn-outline-secondary ml-2" onclick="copyBenefit()">Скопировать результат</button>
+              </div>
+
+              <div id="benefitResult" class="result-box mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- КОНЕЦ НОВОГО БЛОКА -->
+
+    </div>
+
+    <!-- Темы писем + кнопки (оставлены на прежнем месте, после нового блока) -->
+    <div class="container-fluid email-templates-container">
+      <div class="template-header">
+        <span class="mr-2">Темы писем:</span>
+        <span class="template-option" onclick="copyTemplate(0)">Восстановление электроэнергии</span>
+        <span class="template-divider">|</span>
+        <span class="template-option" onclick="copyTemplate(1)">Квитанция АО Мосэнергосбыт</span>
+        <span class="template-divider">|</span>
+        <span class="template-option" onclick="copyTemplate(2)">Акт сверки АО Мосэнергосбыт</span>
+      </div>
+
+      <div class="actions-container">
+        <button type="button" class="action-btn btn-mkd" onclick="send_mail('MKD')">Восстановление МКД</button>
+        <button type="button" class="action-btn btn-igd-asumb" onclick="send_mail('IGD_asumb')">ИЖД АСУМБ</button>
+        <button type="button" class="action-btn btn-igd" onclick="send_mail('IGD')">Восстановление ИЖД</button>
+        <button type="button" class="action-btn btn-pd" onclick="send_mail('PD')">Квитанция</button>
+        <button type="button" class="action-btn btn-akt" onclick="send_mail('Akt')">Акт сверки</button>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+  // ===================== УТИЛИТЫ =====================
+  function formatDate(inp) {
+    let v = inp.value.replace(/\D/g, '').slice(0, 8);
+    const parts = [];
+    if (v.length >= 2) parts.push(v.slice(0, 2));
+    if (v.length >= 4) parts.push(v.slice(2, 4));
+    if (v.length > 4) parts.push(v.slice(4));
+    inp.value = parts.join('.');
+  }
+
+  function formatDisplayDate(dateString) {
+    if (!dateString) return '';
+    const [y, m, d] = dateString.split('-');
+    return `${d}.${m}.${y}`;
+  }
+
+  function parseYMD(dateString) {
+    if (!dateString) return null;
+    const [y, m, d] = dateString.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function diffDays(d1, d2) {
+    const msInDay = 1000 * 60 * 60 * 24;
+    const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
+    const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
+    return Math.max(0, Math.floor((utc2 - utc1) / msInDay));
+  }
+
+  function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+  function num(val) { const n = parseFloat(val); return isNaN(n) ? 0 : n; }
+
+  function onlyDigits(el) { el.value = el.value.replace(/\D/g,'').slice(0,6); }
+
+  function fmt(n, p = 6) {
+    if (!isFinite(n)) return '0';
+    const s = (Math.round(n * 1e6) / 1e6).toFixed(p);
+    return s.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
+  }
+
+  // ========== Динамика "Показания за ..." ==========
+  function updateReadingLabels() {
+    const from = parseYMD(document.getElementById('benDateFrom').value);
+    const to = parseYMD(document.getElementById('benDateTo').value);
+    const container = document.getElementById('readingInputs');
+    const type = document.getElementById('calcType').value;
+
+    if (!from || !to) { container.innerHTML = ''; return; }
+
+    const prev = formatDisplayDate(document.getElementById('benDateFrom').value);
+    const curr = formatDisplayDate(document.getElementById('benDateTo').value);
+
+    let html = '';
+
+    if (type === 'single') {
+      html = `
+        <div class="grid-2 mt-3">
+          <div><label>Показания за ${prev} Тобщ</label><input type="number" class="form-control meter" id="benTprev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Тобщ</label><input type="number" class="form-control meter" id="benTcurr" oninput="onlyDigits(this)"></div>
+        </div>
+      `;
+    } else if (type === 'dual') {
+      html = `
+        <div class="grid-2 mt-3">
+          <div><label>Показания за ${prev} Т1</label><input type="number" class="form-control meter" id="benT1prev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Т1</label><input type="number" class="form-control meter" id="benT1curr" oninput="onlyDigits(this)"></div>
+        </div>
+        <div class="grid-2">
+          <div><label>Показания за ${prev} Т2</label><input type="number" class="form-control meter" id="benT2prev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Т2</label><input type="number" class="form-control meter" id="benT2curr" oninput="onlyDigits(this)"></div>
+        </div>
+      `;
+    } else if (type === 'triple') {
+      html = `
+        <div class="grid-2 mt-3">
+          <div><label>Показания за ${prev} Т1</label><input type="number" class="form-control meter" id="benT1prev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Т1</label><input type="number" class="form-control meter" id="benT1curr" oninput="onlyDigits(this)"></div>
+        </div>
+        <div class="grid-2">
+          <div><label>Показания за ${prev} Т2</label><input type="number" class="form-control meter" id="benT2prev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Т2</label><input type="number" class="form-control meter" id="benT2curr" oninput="onlyDigits(this)"></div>
+        </div>
+        <div class="grid-2">
+          <div><label>Показания за ${prev} Т3</label><input type="number" class="form-control meter" id="benT3prev" oninput="onlyDigits(this)"></div>
+          <div><label>Показания за ${curr} Т3</label><input type="number" class="form-control meter" id="benT3curr" oninput="onlyDigits(this)"></div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+  }
+
+  function renderReadingInputs() { updateReadingLabels(); }
+
+  // ===================== ТАРИФЫ =====================
+  let selectedTariffYear = '2024';
+
+  const tariffs = {
+    '2024': {
+      'Городское население': {
+        single: { T: 6.43 },
+        dual:   { T1: 7.85, T2: 2.98 },
+        triple: { T1: 9.35, T3: 6.43, T2: 2.98 }
+      },
+      'Городское население с электроплитой': {
+        single: { T: 5.66 },
+        dual:   { T1: 6.91, T2: 2.62 },
+        triple: { T1: 8.23, T3: 5.66, T2: 2.62 }
+      },
+      'Сельское население': {
+        single: { T: 4.50 },
+        dual:   { T1: 5.50, T2: 2.09 },
+        triple: { T1: 6.55, T3: 4.50, T2: 2.09 }
+      }
+    },
+    '2025': {
+      'Городское население': {
+        single: { T: 7.87 },
+        dual:   { T1: 9.45, T2: 4.08 },
+        triple: { T1: 11.24, T3: 7.87, T2: 4.08 }
+      },
+      'Городское население с электроплитой': {
+        single: { T: 7.16 },
+        dual:   { T1: 8.60, T2: 3.71 },
+        triple: { T1: 10.23, T3: 7.16, T2: 3.71 }
+      },
+      'Сельское население': {
+        single: { T: 6.77 },
+        dual:   { T1: 8.13, T2: 3.51 },
+        triple: { T1: 9.67, T3: 6.77, T2: 3.51 }
+      }
+    }
+  };
+
+  function setTariffYear(btn, year) {
+    selectedTariffYear = year;
+    const seg = document.getElementById('tariffYearSeg');
+    [...seg.children].forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function getSelectedTariffs() {
+    const category = document.getElementById('tariffCategory').value;
+    const type = document.getElementById('calcType').value;
+    return tariffs[selectedTariffYear][category][
+      type === 'single' ? 'single' : type === 'dual' ? 'dual' : 'triple'
+    ];
+  }
+
+  // ===================== РАСЧЕТ ЛЬГОТЫ =====================
+  function calcBenefit() {
+    const type = document.getElementById('calcType').value;
+    const dateFromStr = document.getElementById('benDateFrom').value;
+    const dateToStr   = document.getElementById('benDateTo').value;
+    const dateFrom = parseYMD(dateFromStr);
+    const dateTo   = parseYMD(dateToStr);
+
+    if (!dateFrom || !dateTo) { alert('Укажите обе даты'); return; }
+    const daysTotal = diffDays(dateFrom, dateTo);
+    if (daysTotal <= 0) { alert('Диапазон дат некорректен'); return; }
+
+    // Дни текущего месяца: c 1-го до дня, предшествующего текущим показаниям
+    const curStart = new Date(dateTo.getFullYear(), dateTo.getMonth(), 1);
+    const curEndExclusive = new Date(dateTo.getFullYear(), dateTo.getMonth(), dateTo.getDate()); // не включая дату показаний
+    const daysCurrent = diffDays(curStart, curEndExclusive);
+
+    // Квота льготы (кВт⋅ч)
+    const persons = +document.getElementById('lgPersons').value;
+    const normPer = +document.getElementById('lgNorm').value;
+    const quota = persons * normPer;
+
+    // Показания и расход по типам
+    let periodUsage = {};       // расход за весь период
+    let avgDaily = {};          // среднесуточное
+    let currentUsage = {};      // расход текущего месяца
+    let bands = [];             // порядок зон
+    let tariffMap = getSelectedTariffs();
+
+    if (type === 'single') {
+      const prev = num(document.getElementById('benTprev')?.value);
+      const curr = num(document.getElementById('benTcurr')?.value);
+      const used = Math.max(0, curr - prev);
+      periodUsage = { T: used };
+      avgDaily = { T: used / daysTotal };
+      currentUsage = { T: avgDaily.T * daysCurrent };
+      bands = ['T'];
+    } else if (type === 'dual') {
+      const p1 = num(document.getElementById('benT1prev')?.value);
+      const c1 = num(document.getElementById('benT1curr')?.value);
+      const p2 = num(document.getElementById('benT2prev')?.value);
+      const c2 = num(document.getElementById('benT2curr')?.value);
+      const u1 = Math.max(0, c1 - p1);
+      const u2 = Math.max(0, c2 - p2);
+      periodUsage = { T1: u1, T2: u2 };
+      avgDaily = { T1: u1 / daysTotal, T2: u2 / daysTotal };
+      currentUsage = { T1: avgDaily.T1 * daysCurrent, T2: avgDaily.T2 * daysCurrent };
+      bands = ['T1','T2']; // порядок для вывода
+    } else { // triple
+      const p1 = num(document.getElementById('benT1prev')?.value);
+      const c1 = num(document.getElementById('benT1curr')?.value);
+      const p2 = num(document.getElementById('benT2prev')?.value);
+      const c2 = num(document.getElementById('benT2curr')?.value);
+      const p3 = num(document.getElementById('benT3prev')?.value);
+      const c3 = num(document.getElementById('benT3curr')?.value);
+      const u1 = Math.max(0, c1 - p1);
+      const u2 = Math.max(0, c2 - p2);
+      const u3 = Math.max(0, c3 - p3);
+      periodUsage = { T1: u1, T2: u2, T3: u3 };
+      avgDaily = { T1: u1 / daysTotal, T2: u2 / daysTotal, T3: u3 / daysTotal };
+      currentUsage = { T1: avgDaily.T1 * daysCurrent, T2: avgDaily.T2 * daysCurrent, T3: avgDaily.T3 * daysCurrent };
+      bands = ['T1','T2','T3']; // порядок для вывода (дорогой порядок используем отдельно)
+    }
+
+    // Распределение льготной квоты по дорогим зонам вперёд:
+    // dual: T1 -> T2
+    // triple: T1 -> T3 -> T2
+    const expensiveOrder = (type === 'dual') ? ['T1','T2']
+                         : (type === 'triple') ? ['T1','T3','T2']
+                         : ['T'];
+    let quotaLeft = quota;
+    const benefitKwh = {}; // кВт⋅ч, попавшие под льготу по зонам (в пределах расхода текущего месяца)
+    for (const z of expensiveOrder) {
+      const canGive = Math.max(0, currentUsage[z] || 0);
+      const give = Math.min(quotaLeft, canGive);
+      benefitKwh[z] = give;
+      quotaLeft -= give;
+    }
+
+    // Стоимость текущего месяца и сумма льготы (50%)
+    let currentCost = 0;
+    let benefitMoney = 0;
+    for (const z of expensiveOrder) {
+      const t = tariffMap[z === 'T' ? 'T' : z] || 0;
+      const e = Math.max(0, currentUsage[z] || 0);
+      const b = Math.max(0, benefitKwh[z] || 0);
+      currentCost += e * t;
+      benefitMoney += 0.5 * b * t; // 50% скидка на льготные кВт⋅ч
+    }
+
+    const payAmount = Math.max(0, currentCost - benefitMoney);
+    const benefitLeft = quotaLeft; // остаток льготы в кВт⋅ч
+
+    // Формирование вывода
+    function lineUsage(label, obj, usedBands) {
+      const parts = [];
+      for (const z of usedBands) {
+        if (obj[z] == null) continue;
+        const val = obj[z];
+        // показываем даже ноль, но можно скрывать пустые по желанию:
+        parts.push(`${z}-${fmt(val)}`);
+      }
+      return `${label}: ${parts.join(', ')}`;
+    }
+
+    function lineBenefitMoney(label, benefitKwh, usedBands) {
+      const parts = [];
+      for (const z of usedBands) {
+        const kwh = benefitKwh[z] || 0;
+        if (kwh <= 0) continue; // не показываем зоны без льготы
+        const t = tariffMap[z === 'T' ? 'T' : z] || 0;
+        const money = 0.5 * kwh * t;
+        parts.push(`${z}-${fmt(money, 2)}`);
+      }
+      return parts.length ? `${label}: ${parts.join(', ')}` : `${label}: 0`;
+    }
+
+    function lineTariffs(tmap, usedBands) {
+      const parts = [];
+      for (const z of usedBands) {
+        const t = tmap[z === 'T' ? 'T' : z];
+        if (t == null) continue;
+        parts.push(`${z}-${fmt(t, 2)}`);
+      }
+      return `Тариф: ${parts.join(', ')}`;
+    }
+
+    const usedBandsForPrint = (type === 'single') ? ['T'] : (type === 'dual') ? ['T1','T2'] : ['T1','T2','T3'];
+
+    const text = [
+      lineUsage('Расход за весь период', periodUsage, usedBandsForPrint),
+      lineUsage('Среднесуточное', avgDaily, usedBandsForPrint),
+      lineUsage('Расход за текущий месяц', currentUsage, usedBandsForPrint),
+      lineBenefitMoney('Льгота', benefitKwh, usedBandsForPrint),
+      lineTariffs(tariffMap, usedBandsForPrint),
+      `Сумма к оплате: ${fmt(payAmount, 2)}`,
+      `Остаток льготы: ${fmt(benefitLeft)} кВт⋅ч`
+    ].join('\n');
+
+    document.getElementById('benefitResult').textContent = text;
+  }
+
+  function copyBenefit() {
+    const text = document.getElementById('benefitResult').textContent.trim();
+    if (!text) { alert('Сначала рассчитайте льготу'); return; }
+    navigator.clipboard.writeText(text).then(() => alert('Результат скопирован!'));
+  }
+
+  // ===================== СТАРЫЕ БЛОКИ (исправления/завершение) =====================
+  function fnCopy1() {
+    navigator.clipboard.writeText(`Не согласен с показаниями "Сети",  Сетевой участок Россети МР; Дата сети ${sDate.value}; То ${sT0.value} ; Т1 ${sT1.value} ; Т2 ${sT2.value} ; Т3 ${sT3.value} ; Дата кл ${cDate.value}; То ${cT0.value} ; Т1 ${cT1.value} ; Т2 ${cT2.value} ; Т3 ${cT3.value} ;`);
+  }
+  function fnCopy2() {
+    if (fT3.value == '' && fT0.value == '') {
+      navigator.clipboard.writeText(`Клиент ошибочно передал показания ${fDate.value} Т1 ${fT1.value} ; Т2 ${fT2.value} ; Корректировочные показания на ${tDate.value} Т1 ${tT1.value} ; Т2 ${tT2.value} ;`);
+    } else if (fT0.value == '') {
+      navigator.clipboard.writeText(`Клиент ошибочно передал показания ${fDate.value} Т1 ${fT1.value} ; Т2 ${fT2.value} ; Т3 ${fT3.value} ; Корректировочные показания на ${tDate.value} Т1 ${tT1.value} ; Т2 ${tT2.value} ; Т3 ${tT3.value} ;`);
+    } else {
+      navigator.clipboard.writeText(`Клиент ошибочно передал показания ${fDate.value} То ${fT0.value} ; Корректировочные показания на ${tDate.value} То ${tT0.value} ;`);
+    }
+  }
+  function fnCopy3() {
+    if (f1T3.value == '' && f1T0.value == '') {
+      navigator.clipboard.writeText(`${f1Date.value} клиент ошибочно передал показания Т1-${f1T1.value}, Т2-${f1T2.value}, данные показания необходимо удалить. Корректные показания на ${t1Date.value}, Т1-${t1T1.value}, Т2-${t1T2.value}.`);
+    } else if (f1T0.value == '') {
+      navigator.clipboard.writeText(`${f1Date.value} клиент ошибочно передал показания Т1-${f1T1.value}, Т2-${f1T2.value}, Т3-${f1T3.value}, данные показания необходимо удалить. Корректные показания на ${t1Date.value}, Т1-${t1T1.value}, Т2-${t1T2.value}, Т3-${t1T3.value}.`);
+    } else {
+      navigator.clipboard.writeText(`${f1Date.value} клиент ошибочно передал показания То-${f1T0.value}, данные показания необходимо удалить. Корректные показания на ${t1Date.value}, То-${t1T0.value}.`);
+    }
+  }
+
+  function rekviz1() {
+    if (phone_1.value == '') {
+      navigator.clipboard.writeText(`Клиенту поступают E-mail на E-mail ${mail_1.value}  о задолженности по ЛС ${ls_1.value}. Клиент не имеет отношение к ЛС ${ls_1.value}. Дата информирования ${date_1.value}. E-mail информирование.`);
+    } else if (mail_1.value == '') {
+      navigator.clipboard.writeText(`Клиенту поступают звонки/смс на телефон ${phone_1.value} о задолженности по ЛС ${ls_1.value}. Клиент не имеет отношение к ЛС ${ls_1.value}. Дата информирования ${date_1.value}. Автообзвон/Росдолг, ручной обзвон/смс-оповещение.`);
+    } else {
+      navigator.clipboard.writeText(`Клиенту поступают звонки/смс/ E-mail на телефон ${phone_1.value} /на E-mail ${mail_1.value}  о задолженности по ЛС ${ls_1.value} . Клиент не имеет отношение к ЛС ${ls_1.value} . Дата информирования ${date_1.value} . Автообзвон/ E-mail информирование/Росдолг, ручной обзвон/смс-оповещение.`);
+    }
+  }
+  function rekviz2() {
+    navigator.clipboard.writeText(`Клиенту на E-mail ${mail_2.value} поступила электронная квитанция по ЛС ${ls_2.value} . Клиент отказывается от получения эл. счетов. Адрес электронной почты ${mail_22.value} необходимо удалить из биллинга`);
+  }
+
+  // Письма
+  var send_mail_arr = {
+    MKD : `Уважаемый клиент!
+Заявка на возобновление подачи электроэнергии по вашему адресу сформирована.
+Для возобновления подачи электроэнергии, Вам необходимо произвести оплату расходов по введению ограничения/приостановлению и возобновлению подачи электроэнергии пройдя по ссылке: https://www.mosenergosbyt.ru/individuals/kak-oplatit-schyet/payments-extra9.php
+      
+ВНИМАНИЕ!
+Оплата производится строго на номер счета указанный в приложенной квитанции № С – 843-*********-*-**
+Оплата произведенная по ЛС электроэнергии не учитывается в счет оплаты услуги по введению ограничения/приостановлению и возобновлению подачи электроэнергии.
+
+После оплаты квитанции счета Вам необходимо направить на электронный адрес vkl-MKD@mosenergosbyt.ru  следующую информацию:
+1. Копию квитанции об оплате счета, направленного в Ваш адрес.
+2. Адрес, по которому оформлена заявка.
+
+Внимание! АО «Мосэнергосбыт» не имеет возможности получавать обращения с зарубежных почтовых серверов/сервисов, таких как: Gmail.com, Outlook.com, iCloud.com, Yahoo.com и т.п. При отправке квитанции на такие электронные адреса доставка также не будет осуществлена.
+
+Почтовый ящик vkl-MKD@mosenergosbyt.ru  предназначен только для получения АО «Мосэнергосбыт» информации от потребителя-должника об осуществлении оплаты по компенсации расходов по отключению/возобновлению подачи электроснабжения бытовым потребителям, после погашения задолженности.`,
+    IGD_asumb : `Уважаемый клиент,
+Заявка на возобновления подачи электроэнергии по вашему адресу сформирована!
+Для возобновления подачи электроэнергии, Вам необходимо произвести оплату расходов по введению ограничения/приостановлению и возобновлению подачи электроэнергии пройдя по ссылке: https://www.mosenergosbyt.ru/individuals/kak-oplatit-schyet/payments-extra9.php
+Далее нажать на логотип банка «ВБРР», в поле «Номер счета» вписать номер счета из квитанции за оказание услуги № С – 843-*********-*-** ( указанного в направленной квитанции), указать сумму оплаты и адрес электронной почты.
+
+ВНИМАНИЕ!
+Оплата производится строго на номер счета указанный в приложенной квитанции № С – 843-*********-*-**
+Оплата произведенная по ЛС электроэнергии не учитывается в счет оплаты услуги по введению ограничения/приостановлению и возобновлению подачи электроэнергии.
+
+Для подтверждения оплаты счета Вам необходимо направить на электронный адрес vkl-IGD@mosenergosbyt.ru следующую информацию:
+1. Копию квитанции об оплате счета, направленного в Ваш адрес.
+2. Адрес, по которому оформлена заявка.
+
+Внимание! АО «Мосэнергосбыт» не имеет возможности получавать обращения с зарубежных почтовых серверов/сервисов, таких как: Gmail.com, Outlook.com, iCloud.com, Yahoo.com и т.п. При отправке квитанции на такие электронные адреса доставка также не будет осуществлена.
+
+Обращаем Ваше внимание, что адрес электронной почты vkl-IGD@mosenergosbyt.ru предназначен только для получения АО «Мосэнергосбыт» информации от потребителя-должника об осуществлении оплаты по компенсации расходов по отключению/возобновлению подачи электроснабжения бытовым потребителям, после погашения задолженности.`,
+    IGD : `Уважаемый клиент,
+Заявка на возобновления подачи электроэнергии по вашему адресу сформирована!
+Для возобновления подачи электроэнергии, Вам необходимо произвести оплату расходов по введению ограничения/приостановлению и возобновлению подачи электроэнергии пройдя по ссылке: https://www.mosenergosbyt.ru/individuals/kak-opлатit-schyet/payments-extra9.php
+Далее нажать на логотип банка «ВБРР», в поле «Номер счета» вписать номер счета из квитанции за оказание услуги № С – 842-*********-*-** ( указанного в направленной квитанции), указать сумму оплаты и адрес электронной почты.
+
+ВНИМАНИЕ!
+Оплата производится строго на номер счета указанный в приложенной квитанции № С – 842-*********-*-**
+Оплата произведенная по ЛС электроэнергии не учитывается в счет оплаты услуги по введению ограничения/приостановлению и возобновлению подачи электроэнергии.
+
+Для подтверждения оплаты счета Вам необходимо направить на электронный адрес vkl-IGD@mosenergosbyt.ru следующую информацию:
+1. Копию квитанции об оплате счета, направленного в Ваш адрес.
+2. Адрес, по которому оформлена заявка.
+
+Внимание! АО «Мосэнергосбыт» не имеет возможности получавать обращения с зарубежных почтовых серверов/сервисов, таких как: Gmail.com, Outlook.com, iCloud.com, Yahoo.com и т.п. При отправке квитанции на такие электронные адреса доставка также не будет осуществлена.
+
+Почтовый ящик vkl-IGD@mosэнергосбыт.ru предназначен только для получения АО «Мосэнергосбыт» информации от потребителя-должника об осуществлении оплаты по компенсации расходов по отключению/возобновлению подачи электроснабжения бытовым потребителям, после погашения задолженности.`,
+    PD : `Добрый день!
+Уважаемый клиент, во вложении квитанция по ЛС ххххх.
+Благодарим за обращение в АО «Мосэнергосбыт».`,
+    Akt : `Добрый день!
+Уважаемый клиент, акт сверки по ЛС ххх за период с ХХ по ХХ во вложении. 
+Благодарим за обращение в АО «Мосэнергосбыт»`,
+    TextTemplates: `Восстановление электроэнергии | Квитанция АО Мосэнергосбыт | Акт сверки АО Мосэнергосбыт`
+  };
+  function copyTemplate(index) {
+    const templates = send_mail_arr['TextTemplates'].split(' | ');
+    if (index >= 0 && index < templates.length) {
+      navigator.clipboard.writeText(templates[index]);
+    }
+  }
+  function send_mail(arg) { navigator.clipboard.writeText(send_mail_arr[arg]); }
+
+  // Жалоба на отключение
+  let selectedComplaintType = '';
+  let selectedConfirmationType = '';
+  function selectComplaintType(type) {
+    selectedComplaintType = type;
+    const themeText = document.getElementById('themeText');
+    themeText.textContent = type;
+    document.getElementById('selectedTheme').style.display = 'block';
+    selectedConfirmationType = '';
+    document.querySelectorAll('#confirmationTypeGroup button').forEach(btn => btn.classList.remove('active'));
+    if (type === 'Ошибочное отключение') {
+      document.getElementById('confirmationTypeGroup').style.display = 'none';
+      document.getElementById('emailGroup').style.display = 'none';
+      document.getElementById('paymentDateGroup').style.display = 'none';
+      document.getElementById('complaintDateGroup').style.display = 'none';
+    } else {
+      document.getElementById('confirmationTypeGroup').style.display = 'block';
+      document.getElementById('complaintDateGroup').style.display = 'block';
+    }
+  }
+  function copyThemeText() {
+    const themeText = document.getElementById('themeText').textContent;
+    if (themeText) navigator.clipboard.writeText(themeText);
+  }
+  function selectConfirmationType(ev, type) {
+    selectedConfirmationType = type;
+    document.querySelectorAll('#confirmationTypeGroup button').forEach(btn => btn.classList.remove('active'));
+    if (ev && ev.target) ev.target.classList.add('active');
+    if (type === 'Подтвердил через почту') {
+      document.getElementById('emailGroup').style.display = 'block';
+      document.getElementById('paymentDateGroup').style.display = 'block';
+    } else {
+      document.getElementById('emailGroup').style.display = 'none';
+      document.getElementById('paymentDateGroup').style.display = 'none';
+    }
+  }
+  function syncPaymentDate(dateValue) { document.getElementById('paymentDate').value = dateValue; }
+  function copyComplaint() {
+    const phone = document.getElementById('complaintPhone').value;
+    if (!phone) { alert('Пожалуйста, укажите телефон для связи'); return; }
+    let text = '';
+    if (selectedComplaintType === 'Ошибочное отключение') {
+      text = `Со слов клиента, отключили э/э. Задолженности - нет, в графике на ограничение ЛС нет. Тел. для связи ${phone}`;
+    } else {
+      const complaintDate = formatDisplayDate(document.getElementById('complaintDate').value);
+      if (!complaintDate) { alert('Пожалуйста, укажите дату оплаты'); return; }
+      if (selectedConfirmationType === 'Подтверждено в КО') {
+        text = `э/э оплачена ${complaintDate}, подтверждение оплаты было в КО, тел. для связи ${phone}`;
+      } else if (selectedConfirmationType === 'Подтвердил через почту') {
+        const paymentDate = formatDisplayDate(document.getElementById('paymentDate').value);
+        const email = document.getElementById('complaintEmail').value;
+        if (!email) { alert('Пожалуйста, укажите email'); return; }
+        text = `э/э оплачена ${complaintDate}, направлен чек ${paymentDate} с эл. почты ${email}, тел. для связи ${phone}`;
+      } else {
+        alert('Пожалуйста, выберите тип подтверждения');
+        return;
+      }
+    }
+    navigator.clipboard.writeText(text).then(() => alert('Текст скопирован в буфер обмена!'));
+  }
+
+  // Жалоба на сроки заключения договора
+  let selectedContractType = '';
+  function selectContractType(type) {
+    selectedContractType = type;
+    if (type === 'Подача в ЛКК') {
+      document.getElementById('requestNumberGroup').style.display = 'block';
+      document.getElementById('officeAddressGroup').style.display = 'none';
+    } else {
+      document.getElementById('requestNumberGroup').style.display = 'none';
+      document.getElementById('officeAddressGroup').style.display = 'block';
+    }
+  }
+  function copyContractComplaint() {
+    const date = formatDisplayDate(document.getElementById('contractDate').value);
+    const clientNumber = document.getElementById('clientNumber').value;
+    let text = '';
+    if (selectedContractType === 'Подача в ЛКК') {
+      const requestNumber = document.getElementById('requestNumber').value;
+      text = `${date} через ЛКК оформлена услуга Оформление заявки на заключение договора с физ. лицом № ${requestNumber}. 30 дней истекли, договор не заключен, ЛС не присвоен. Просьба посодействовать в решении вопроса, дать обратную связь клиенту, присвоить ЛС. Номер клиента: ${clientNumber}`;
+    } else {
+      const officeAddress = document.getElementById('officeAddress').value;
+      text = `${date} в КО ${officeAddress} клиент подавал заявку на заключение договора. 30 дней истекли, договор не заключен, ЛС не присвоен. Просьба посодействовать в решении вопроса, дать обратную связь клиенту, присвоить ЛС. Номер клиента: ${clientNumber}`;
+    }
+    navigator.clipboard.writeText(text).then(() => alert('Текст скопирован в буфер обмена!'));
+  }
+
+  // Расчет new (оставлен как в исходнике с небольшими правками по стилю)
+  function nr() {
+    bloknot.value = '';
+    const d1 = new Date(nrDate1.value.slice(6), nrDate1.value.slice(3, 5), nrDate1.value.slice(0, 2));
+    const d2 = new Date(nrDate2.value.slice(6), nrDate2.value.slice(3, 5), nrDate2.value.slice(0, 2));
+    const diffInMs = Math.abs(d2 - d1);
+    const msInDay = 1000 * 60 * 60 * 24;
+    const dp = Math.floor(diffInMs / msInDay);
+    const drT1 = (num(nr1T1.value) - num(nrT1.value)) / dp;
+    const drT2 = (num(nr1T2.value) - num(nrT2.value)) / dp;
+    const drT3 = (num(nr1T3.value) - num(nrT3.value)) / dp;
+    $('.nrItog').each(function () {
+      const d3 = $(this).val();
+      if (d3 != '') {
+        const CurDate = new Date(d3.slice(6), d3.slice(3, 5), d3.slice(0, 2));
+        const diffInMs1 = Math.abs(CurDate - d1);
+        const dp1 = Math.floor(diffInMs1 / msInDay);
+        const itogT1 = Math.floor(drT1 * dp1 + Number(nrT1.value));
+        const itogT2 = Math.floor(drT2 * dp1 + Number(nrT2.value));
+        const itogT3 = Math.floor(drT3 * dp1 + Number(nrT3.value));
+        if (itogT2 == '') {
+          bloknot.value += `Клиент ошибочно передал показания ${d3} То xxxx ; Корректировочные показания на ${d3} То ${itogT1} ;\n`;
+        } else if (itogT3 == '') {
+          bloknot.value += `Клиент ошибочно передал показания ${d3} Т1 xxxx ; Т2 xxxx ; Корректировочные показания на ${d3} Т1 ${itogT1} ; Т2 ${itogT2} ;\n`;
+        } else {
+          bloknot.value += `Клиент ошибочно передал показания ${d3} Т1 xxxx ; Т2 xxxx ; Т3 xxxx ; Корректировочные показания на ${d3} Т1 ${itogT1} ; Т2 ${itogT2} ; Т3 ${itogT3} ;\n`;
+        }
+        $('#bloknot').attr('style', 'width: 1000px; height: 250px');
+      }
+    });
+  }
+
+  // ===================== ИНИЦИАЛИЗАЦИЯ =====================
+  document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация дат в жалобах
+    const today = new Date().toISOString().split('T')[0];
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    // Жалоба на отключение
+    const complaintDateEl = document.getElementById('complaintDate');
+    const paymentDateEl = document.getElementById('paymentDate');
+    if (complaintDateEl) complaintDateEl.value = today;
+    if (paymentDateEl) paymentDateEl.value = today;
+    // Жалоба на сроки заключения договора
+    const contractDateEl = document.getElementById('contractDate');
+    if (contractDateEl) contractDateEl.value = oneMonthAgo.toISOString().split('T')[0];
+    if (complaintDateEl) {
+      complaintDateEl.addEventListener('change', function() {
+        if (paymentDateEl) paymentDateEl.value = this.value;
+      });
+    }
+
+    // Инициализация блока "Расчет льготы"
+    const benFrom = document.getElementById('benDateFrom');
+    const benTo   = document.getElementById('benDateTo');
+    if (benFrom && benTo) {
+      // По умолчанию — период ровно месяц назад до сегодня
+      const to = new Date();
+      const from = new Date(to.getFullYear(), to.getMonth() - 1, to.getDate());
+      benFrom.value = from.toISOString().split('T')[0];
+      benTo.value = to.toISOString().split('T')[0];
+      renderReadingInputs();
+    }
+  });
+</script>
+
+</html>
